@@ -8,8 +8,6 @@ class TerminalGame {
         this.currentProgress = 0;
         this.discoveredPoints = 0;
         this.hintCount = 2;
-        this.themes = [];
-        this.puzzles = {};
 
         // 先加载开始菜单
         this.loadView('start-menu')
@@ -45,25 +43,17 @@ class TerminalGame {
         });
     }
 
-    async init() {
-        try {
-            // 获取主题列表
-            const response = await fetch('http://localhost:3000/api/themes');
-            this.themes = await response.json();
-            
-            if (this.themeList) {
-                this.themeList.innerHTML = '<div class="prompt">> 选择你的任务：</div>';
-                this.renderThemes();
-                this.themeList.classList.remove('hidden');
-            }
-            this.setupGameEvents();
-        } catch (error) {
-            console.error('加载主题失败:', error);
+    init() {
+        if (this.themeList) {
+            this.themeList.innerHTML = '<div class="prompt">> 选择你的任务：</div>';
+            this.renderThemes();
+            this.themeList.classList.remove('hidden');
         }
+        this.setupGameEvents();
     }
 
     renderThemes() {
-        this.themes.forEach((theme, index) => {
+        gameData.themes.forEach((theme, index) => {
             const themeElement = document.createElement('div');
             themeElement.className = 'theme-option';
             themeElement.textContent = theme.name;
@@ -218,25 +208,19 @@ class TerminalGame {
         });
     }
 
-    async selectTheme() {
-        const selectedTheme = this.themes[this.currentThemeIndex];
+    selectTheme() {
+        const selectedTheme = gameData.themes[this.currentThemeIndex];
         
-        try {
-            // 获取主题下的谜题列表
-            const response = await fetch(`http://localhost:3000/api/themes/${selectedTheme.id}/puzzles`);
-            const puzzles = await response.json();
-            
-            if (this.themeList) {
-                this.themeList.classList.add('hidden');
-            }
-            
-            if (puzzles.length > 1) {
-                this.showPuzzleList(puzzles);
-            } else {
-                this.startPuzzle(puzzles[0]);
-            }
-        } catch (error) {
-            console.error('加载谜题失败:', error);
+        // 先隐藏主题列表
+        if (this.themeList) {
+            this.themeList.classList.add('hidden');
+        }
+        
+        if (selectedTheme.puzzles.length > 1) {
+            this.showPuzzleList(selectedTheme.puzzles);
+        } else {
+            // 如果只有一个故事，直接开始
+            this.startPuzzle(selectedTheme.puzzles[0]);
         }
     }
 

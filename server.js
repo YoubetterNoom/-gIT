@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const gameData = require('./data/game-data.js');
 
 const app = express();
 app.use(cors());
@@ -102,50 +101,6 @@ app.post('/api/hint', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-});
-
-// 获取所有主题
-app.get('/api/themes', (req, res) => {
-    // 只返回主题名称和ID，不返回谜题内容
-    const themes = gameData.themes.map(theme => ({
-        id: theme.id,
-        name: theme.name,
-        puzzleCount: theme.puzzles.length
-    }));
-    res.json(themes);
-});
-
-// 获取主题下的谜题列表
-app.get('/api/themes/:themeId/puzzles', (req, res) => {
-    const theme = gameData.themes.find(t => t.id === parseInt(req.params.themeId));
-    if (!theme) {
-        return res.status(404).json({ error: '主题不存在' });
-    }
-    // 只返回谜题标题和ID，不返回答案
-    const puzzles = theme.puzzles.map(puzzle => ({
-        id: puzzle.id,
-        title: puzzle.title,
-        question: puzzle.question
-    }));
-    res.json(puzzles);
-});
-
-// 获取单个谜题的问题
-app.get('/api/puzzles/:puzzleId', (req, res) => {
-    let puzzle = null;
-    for (const theme of gameData.themes) {
-        puzzle = theme.puzzles.find(p => p.id === parseInt(req.params.puzzleId));
-        if (puzzle) break;
-    }
-    if (!puzzle) {
-        return res.status(404).json({ error: '谜题不存在' });
-    }
-    // 只返回问题，不返回答案
-    res.json({
-        id: puzzle.id,
-        title: puzzle.title,
-        question: puzzle.question
-    });
 });
 
 app.listen(3000, () => {
