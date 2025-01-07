@@ -356,14 +356,12 @@ class TerminalGame {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    messages: [{
-                        role: "system",
-                        content: "你是海龟汤游戏的评判系统..."
-                    }, {
-                        role: "user",
-                        content: prompt
-                    }],
-                    temperature: 0.3
+                    prompt: {
+                        question: this.currentPuzzle.question,
+                        answer: this.currentPuzzle.answer,
+                        input: input
+                    },
+                    type: 'analyze'
                 })
             });
 
@@ -372,7 +370,7 @@ class TerminalGame {
             }
 
             const data = await response.json();
-            return JSON.parse(data.choices[0].message.content);
+            return data.result;
         } catch (error) {
             console.error('分析输入失败:', error);
             return {
@@ -442,47 +440,15 @@ class TerminalGame {
     async getHint() {
         if (this.hintCount <= 0) return;
 
-        const prompt = `
-        基于当前进度(${this.currentProgress}%)，生成一个引导性问题。
-
-        谜题：${this.currentPuzzle.question}
-
-        提示规则：
-        1. 不要涉及任何具体答案内容
-        2. 引导玩家思考方向，而不是具体细节
-        3. 必须是"是"或"否"的问题
-        4. 根据进度提供不同层次的引导：
-           - 0-30%: 引导关注故事的基本要素（人物、地点、时间等）
-           - 31-60%: 引导思考事件的性质（动机、原因、目的等）
-           - 61-90%: 引导思考事件的关联性（因果、影响、结果等）
-           - 91-100%: 引导思考整体逻辑
-
-        提示类型示例：
-        - "这件事是否与人际关系有关？"
-        - "事情的发生是否有特定的时间背景？"
-        - "是否需要考虑环境因素？"
-        - "这个结果是否是必然的？"
-
-        请直接返回一个引导性问题，不要包含任何具体剧情信息。
-        `;
-
         try {
-            const response = await fetch(`${CONFIG.OPENAI_BASE_URL}/chat/completions`, {
+            const response = await fetch('http://localhost:3000/api/hint', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${CONFIG.OPENAI_API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: "gpt-3.5-turbo",
-                    messages: [{
-                        role: "system",
-                        content: "你是海龟汤游戏的提示系统。你的任务是生成抽象的引导性问题，帮助玩家思考方向，但绝不能暴露任何与答案相关的具体信息。"
-                    }, {
-                        role: "user",
-                        content: prompt
-                    }],
-                    temperature: 0.7
+                    puzzle: this.currentPuzzle,
+                    progress: this.currentProgress
                 })
             });
 
@@ -491,9 +457,7 @@ class TerminalGame {
             }
 
             const data = await response.json();
-            const hint = data.choices[0].message.content.trim();
-            
-            this.addMessage('系统', hint, 'ai');
+            this.addMessage('系统', data.hint, 'ai');
             this.hintCount--;
             this.updateHintCount();
 
