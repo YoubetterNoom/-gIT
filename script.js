@@ -9,7 +9,7 @@ class TerminalGame {
         this.discoveredPoints = 0;
         this.hintCount = 2;
 
-        // 先加载开始菜单
+        // Load start menu first
         this.loadView('start-menu')
             .then(() => {
                 return Promise.all([
@@ -35,9 +35,9 @@ class TerminalGame {
             });
         });
 
-        // 设置返回主菜单按钮点击事件
+        // 更新返回主菜单按钮的事件监听
         document.querySelectorAll('.terminal-button').forEach(button => {
-            if (button.textContent.includes('返回主菜单')) {
+            if (button.textContent.includes('Back to Menu')) {
                 button.addEventListener('click', () => this.showStartMenu());
             }
         });
@@ -45,7 +45,7 @@ class TerminalGame {
 
     init() {
         if (this.themeList) {
-            this.themeList.innerHTML = '<div class="prompt">> 选择你的任务：</div>';
+            this.themeList.innerHTML = '<div class="prompt">> Select your mission:</div>';
             this.renderThemes();
             this.themeList.classList.remove('hidden');
         }
@@ -72,7 +72,7 @@ class TerminalGame {
         
         this.puzzleList = document.createElement('div');
         this.puzzleList.className = 'puzzle-list';
-        this.puzzleList.innerHTML = '<div class="prompt">> 选择一个故事：</div>';
+        this.puzzleList.innerHTML = '<div class="prompt">> Choose a story:</div>';
 
         puzzles.forEach((puzzle, index) => {
             const puzzleElement = document.createElement('div');
@@ -121,7 +121,7 @@ class TerminalGame {
             const html = await response.text();
             this.terminalContent.innerHTML += html;
         } catch (error) {
-            console.error(`加载视图 ${viewName} 失败:`, error);
+            console.error(`Failed to load view ${viewName}:`, error);
         }
     }
 
@@ -148,7 +148,7 @@ class TerminalGame {
         // 添加加载文字
         const loadingText = document.createElement('div');
         loadingText.className = 'loading-text';
-        loadingText.innerHTML = '系统切换中<span class="loading-dots"></span>';
+        loadingText.innerHTML = 'System Switching<span class="loading-dots"></span>';
         
         effects.forEach(effect => transition.appendChild(effect));
         transition.appendChild(loadingText);
@@ -165,7 +165,7 @@ class TerminalGame {
         from.classList.add('hidden');
         
         // 更新加载文字
-        loadingText.innerHTML = '正在加载新界面<span class="loading-dots"></span>';
+        loadingText.innerHTML = 'Loading New Interface<span class="loading-dots"></span>';
         
         // 重置样式
         from.style.transform = '';
@@ -182,7 +182,7 @@ class TerminalGame {
         to.offsetHeight;
         
         // 更新加载文字
-        loadingText.innerHTML = '准备完成<span class="loading-dots"></span>';
+        loadingText.innerHTML = 'Ready<span class="loading-dots"></span>';
         
         // 添加进入动画
         to.style.transition = 'all 0.2s ease-out';
@@ -251,6 +251,13 @@ class TerminalGame {
         this.hintButton = document.getElementById('hint-button');
         this.hintCountElement = document.querySelector('.hint-count');
         this.feedback = document.getElementById('feedback');
+
+        // 重新绑定返回按钮事件
+        document.querySelectorAll('.terminal-button').forEach(button => {
+            if (button.textContent.includes('Back to Menu')) {
+                button.addEventListener('click', () => this.showStartMenu());
+            }
+        });
     }
 
     hideAllScreens() {
@@ -303,16 +310,16 @@ class TerminalGame {
 
     async startPuzzle(puzzle) {
         if (!this.puzzleContent || !this.chatWindow || !this.backButton || !this.hintButton) {
-            console.error('游戏元素未正确初始化');
+            console.error('Game elements not properly initialized');
             return;
         }
 
-        // 清理可能存在的故事列表
+        // Clean up existing story list
         if (this.puzzleList) {
             this.puzzleList.remove();
         }
 
-        // 确保主题列表和其他不相关元素都被隐藏
+        // Hide theme list and other irrelevant elements
         if (this.themeList) {
             this.themeList.classList.add('hidden');
         }
@@ -340,7 +347,7 @@ class TerminalGame {
             this.progressText.textContent = '0%';
         }
 
-        this.addMessage('系统', '你可以问我问题，我会回答"是"或"否"。当你想到答案时，直接告诉我答案。', 'ai');
+        this.addMessage('System', 'You can ask me questions, and I will answer with "Yes" or "No". When you think you know the answer, tell me the complete story.', 'ai');
         this.discoveredPoints = 0;
         this.hintCount = 2;
         this.updateHintCount();
@@ -397,7 +404,7 @@ class TerminalGame {
         const input = this.chatInput.value.trim();
         if (!input) return;
 
-        this.addMessage('你', input, 'user');
+        this.addMessage('You', input, 'user');
         this.chatInput.value = '';
 
         try {
@@ -410,8 +417,8 @@ class TerminalGame {
             this.addMessage('AI', analysis.response, 'ai');
 
         } catch (error) {
-            console.error('AI 回答出错:', error);
-            this.addMessage('AI', '无关', 'ai');
+            console.error('AI response error:', error);
+            this.addMessage('AI', 'Irrelevant', 'ai');
         }
     }
 
@@ -433,17 +440,17 @@ class TerminalGame {
             });
 
             if (!response.ok) {
-                throw new Error('API 请求失败');
+                throw new Error('API request failed');
             }
 
             const data = await response.json();
             return data.result;
         } catch (error) {
-            console.error('分析输入失败:', error);
+            console.error('Failed to analyze input:', error);
             return {
                 isAnswer: false,
                 isCorrect: false,
-                response: "无关",
+                response: "Irrelevant",
                 progress: this.currentProgress
             };
         }
@@ -467,10 +474,10 @@ class TerminalGame {
         const modal = document.createElement('div');
         modal.className = 'celebration-modal';
         modal.innerHTML = `
-            <h2>🎉 恭喜你解开了谜题！ 🎉</h2>
-            <p>完整故事：</p>
+            <h2>🎉 Congratulations! You solved the riddle! 🎉</h2>
+            <p>Complete Story:</p>
             <div class="answer">${this.currentPuzzle.answer}</div>
-            <button class="terminal-button">继续探索</button>
+            <button class="terminal-button">Continue Exploring</button>
         `;
 
         document.body.appendChild(modal);
@@ -520,26 +527,35 @@ class TerminalGame {
             });
 
             if (!response.ok) {
-                throw new Error('API 请求失败');
+                throw new Error('API request failed');
             }
 
             const data = await response.json();
-            this.addMessage('系统', data.hint, 'ai');
+            this.addMessage('System', data.hint, 'ai');
             this.hintCount--;
             this.updateHintCount();
 
         } catch (error) {
-            console.error('获取提示失败:', error);
-            this.addMessage('系统', '抱歉，无法获取提示，请稍后再试。', 'ai');
+            console.error('Failed to get hint:', error);
+            this.addMessage('System', 'Sorry, unable to get hint. Please try again later.', 'ai');
         }
     }
 
     async showStartMenu() {
-        const currentScreen = this.rulesScreen.classList.contains('hidden') ? 
-            (this.socialScreen.classList.contains('hidden') ? this.gameContent : this.socialScreen) : 
-            this.rulesScreen;
-            
-        await this.switchScreen(currentScreen, this.startMenu);
+        let currentScreen;
+        
+        // 确定当前显示的是哪个屏幕
+        if (!this.rulesScreen.classList.contains('hidden')) {
+            currentScreen = this.rulesScreen;
+        } else if (!this.socialScreen.classList.contains('hidden')) {
+            currentScreen = this.socialScreen;
+        } else if (!this.gameContent.classList.contains('hidden')) {
+            currentScreen = this.gameContent;
+        }
+
+        if (currentScreen) {
+            await this.switchScreen(currentScreen, this.startMenu);
+        }
     }
 }
 
