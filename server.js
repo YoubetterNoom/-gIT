@@ -1,10 +1,27 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// 添加静态文件服务
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/views', express.static(path.join(__dirname, 'views')));
+
+// 添加环境变量验证
+if (!process.env.OPENAI_API_KEY) {
+    console.error('错误: 未设置 OPENAI_API_KEY 环境变量');
+    process.exit(1);
+}
+
+// 添加错误处理中间件
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: '服务器内部错误' });
+});
 
 // 分析用户输入
 app.post('/api/chat', async (req, res) => {

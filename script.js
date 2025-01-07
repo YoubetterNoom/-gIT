@@ -117,7 +117,7 @@ class TerminalGame {
 
     async loadView(viewName) {
         try {
-            const response = await fetch(`views/${viewName}.html`);
+            const response = await fetch(`/views/${viewName}.html`);
             const html = await response.text();
             this.terminalContent.innerHTML += html;
         } catch (error) {
