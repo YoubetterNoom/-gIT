@@ -413,4 +413,194 @@ body {
 /* 移除选中状态的样式 */
 .selected {
     background: none;
+}
+
+/* TV 切换效果容器 */
+.tv-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    pointer-events: none;
+    background: black;
+    overflow: hidden;
+}
+
+/* 扫描线效果 */
+.tv-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(0, 255, 0, 0.1) 50%
+    );
+    background-size: 100% 2px;
+    animation: scanlines 0.05s linear infinite;
+}
+
+/* 静态噪点效果 */
+.tv-static {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgE1xQAAAABh0Uk5TARgZGhscHR4fICEiIyQlJicoKSorLC0uBPc3kQAAAFNJREFUKM9jYKAOYGRgYmBgYmZgYGRhYGBkZQCC/0DMzALksTEwsDEyMTClp6cHBQUVhIaGhgYFRYSGhoaFhQFZLEAeFwMDNxsDN2NBQQADKXgAcUwLMXzjZhkAAAAASUVORK5CYII=');
+    opacity: 0.3;
+    transform: rotate(45deg);
+    animation: tv-static 0.2s steps(2, end) infinite;
+}
+
+/* 扭曲效果 */
+.tv-distortion {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: distortion 0.2s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* 闪光效果 */
+.tv-flicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(0, 255, 0, 0.1) 0%,
+        transparent 70%
+    );
+    animation: flicker 0.05s steps(2, end) infinite;
+}
+
+/* 色差效果 */
+.tv-rgb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 0, 0, 0.1),
+        rgba(0, 255, 0, 0.1),
+        rgba(0, 0, 255, 0.1)
+    );
+    mix-blend-mode: screen;
+    animation: rgb-shift 0.2s infinite;
+}
+
+@keyframes scanlines {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(2px);
+    }
+}
+
+@keyframes tv-static {
+    0% {
+        transform: translateX(-10%) translateY(-10%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(10%) translateY(10%) rotate(45deg);
+    }
+}
+
+@keyframes distortion {
+    0% {
+        transform: scaleY(1) skewX(0deg);
+    }
+    25% {
+        transform: scaleY(0.95) skewX(5deg);
+    }
+    50% {
+        transform: scaleY(1.05) skewX(-5deg);
+    }
+    75% {
+        transform: scaleY(0.95) skewX(5deg);
+    }
+    100% {
+        transform: scaleY(1) skewX(0deg);
+    }
+}
+
+@keyframes flicker {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes rgb-shift {
+    0% {
+        transform: translate(-2px, 0);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(2px, 0);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-2px, 0);
+        opacity: 0.5;
+    }
+}
+
+/* 加载文字容器 */
+.loading-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    text-shadow: 0 0 10px #0f0;
+    white-space: nowrap;
+    z-index: 1001;
+}
+
+/* 打字机光标效果 */
+.loading-text::after {
+    content: '_';
+    animation: cursor-blink 0.8s infinite;
+}
+
+/* 加载动画 */
+.loading-dots {
+    display: inline-block;
+    width: 20px;
+    text-align: left;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: loading-dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+@keyframes loading-dots {
+    0% { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+    100% { content: ''; }
 } 

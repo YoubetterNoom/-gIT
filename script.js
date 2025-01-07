@@ -125,6 +125,84 @@ class TerminalGame {
         }
     }
 
+    async switchScreen(from, to) {
+        if (!from || !to) return;
+
+        // 创建 TV 切换效果
+        const transition = document.createElement('div');
+        transition.className = 'tv-transition';
+        
+        // 添加各种效果层
+        const effects = [
+            'tv-scanlines',
+            'tv-static',
+            'tv-distortion',
+            'tv-flicker',
+            'tv-rgb'
+        ].map(className => {
+            const effect = document.createElement('div');
+            effect.className = className;
+            return effect;
+        });
+        
+        // 添加加载文字
+        const loadingText = document.createElement('div');
+        loadingText.className = 'loading-text';
+        loadingText.innerHTML = '系统切换中<span class="loading-dots"></span>';
+        
+        effects.forEach(effect => transition.appendChild(effect));
+        transition.appendChild(loadingText);
+        document.body.appendChild(transition);
+
+        // 添加退出动画
+        from.style.transition = 'all 0.2s ease-out';
+        from.style.transform = 'scale(0.95) translateY(-30px) skewY(-5deg)';
+        from.style.filter = 'brightness(1.5) blur(10px)';
+        from.style.opacity = '0';
+
+        // 等待动画完成
+        await new Promise(resolve => setTimeout(resolve, 200));
+        from.classList.add('hidden');
+        
+        // 更新加载文字
+        loadingText.innerHTML = '正在加载新界面<span class="loading-dots"></span>';
+        
+        // 重置样式
+        from.style.transform = '';
+        from.style.filter = '';
+        from.style.opacity = '';
+
+        // 显示新屏幕
+        to.classList.remove('hidden');
+        to.style.transform = 'scale(0.95) translateY(30px) skewY(5deg)';
+        to.style.filter = 'brightness(1.5) blur(10px)';
+        to.style.opacity = '0';
+        
+        // 强制重排
+        to.offsetHeight;
+        
+        // 更新加载文字
+        loadingText.innerHTML = '准备完成<span class="loading-dots"></span>';
+        
+        // 添加进入动画
+        to.style.transition = 'all 0.2s ease-out';
+        to.style.transform = 'scale(1) translateY(0) skewY(0)';
+        to.style.filter = 'brightness(1) blur(0)';
+        to.style.opacity = '1';
+
+        // 等待动画完成
+        await new Promise(resolve => setTimeout(resolve, 400));
+        
+        // 清理样式
+        to.style.transform = '';
+        to.style.filter = '';
+        to.style.opacity = '';
+        to.style.transition = '';
+
+        // 移除过渡效果
+        transition.remove();
+    }
+
     async handleMenuSelection(index) {
         switch (index) {
             case 0: // 开始游戏
@@ -132,13 +210,8 @@ class TerminalGame {
                     await this.loadView('game-content');
                     this.initializeElements();
                 }
-                if (this.startMenu) {
-                    this.startMenu.classList.add('hidden');
-                }
-                if (this.gameContent) {
-                    this.gameContent.classList.remove('hidden');
-                    this.init();
-                }
+                await this.switchScreen(this.startMenu, this.gameContent);
+                this.init();
                 break;
                 
             case 1: // 游戏规则
@@ -146,12 +219,7 @@ class TerminalGame {
                     await this.loadView('rules-screen');
                     this.initializeElements();
                 }
-                if (this.startMenu) {
-                    this.startMenu.classList.add('hidden');
-                }
-                if (this.rulesScreen) {
-                    this.rulesScreen.classList.remove('hidden');
-                }
+                await this.switchScreen(this.startMenu, this.rulesScreen);
                 break;
                 
             case 2: // 社交媒体
@@ -159,12 +227,7 @@ class TerminalGame {
                     await this.loadView('social-screen');
                     this.initializeElements();
                 }
-                if (this.startMenu) {
-                    this.startMenu.classList.add('hidden');
-                }
-                if (this.socialScreen) {
-                    this.socialScreen.classList.remove('hidden');
-                }
+                await this.switchScreen(this.startMenu, this.socialScreen);
                 break;
         }
     }
@@ -238,7 +301,7 @@ class TerminalGame {
         this.themeList.classList.remove('hidden');
     }
 
-    startPuzzle(puzzle) {
+    async startPuzzle(puzzle) {
         if (!this.puzzleContent || !this.chatWindow || !this.backButton || !this.hintButton) {
             console.error('游戏元素未正确初始化');
             return;
@@ -281,9 +344,11 @@ class TerminalGame {
         this.discoveredPoints = 0;
         this.hintCount = 2;
         this.updateHintCount();
+
+        await this.switchScreen(this.themeList, this.puzzleContent);
     }
 
-    returnToMainMenu() {
+    async returnToMainMenu() {
         // 清理聊天和进度
         if (this.chatMessages) {
             this.chatMessages.innerHTML = '';
@@ -324,6 +389,8 @@ class TerminalGame {
         }
         
         this.currentPuzzleIndex = 0;
+
+        await this.switchScreen(this.puzzleContent, this.themeList);
     }
 
     async handleChatInput() {
@@ -467,19 +534,12 @@ class TerminalGame {
         }
     }
 
-    showStartMenu() {
-        if (this.rulesScreen) {
-            this.rulesScreen.classList.add('hidden');
-        }
-        if (this.socialScreen) {
-            this.socialScreen.classList.add('hidden');
-        }
-        if (this.gameContent) {
-            this.gameContent.classList.add('hidden');
-        }
-        if (this.startMenu) {
-            this.startMenu.classList.remove('hidden');
-        }
+    async showStartMenu() {
+        const currentScreen = this.rulesScreen.classList.contains('hidden') ? 
+            (this.socialScreen.classList.contains('hidden') ? this.gameContent : this.socialScreen) : 
+            this.rulesScreen;
+            
+        await this.switchScreen(currentScreen, this.startMenu);
     }
 }
 
