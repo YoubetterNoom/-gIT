@@ -1,33 +1,33 @@
 <div id="game-content" class="hidden">
+    <!-- 主题列表 -->
     <div id="theme-list" class="hidden">
-        <!-- Themes will be loaded here dynamically -->
+        <div class="prompt">> 选择你的任务_使用↑↓键选择主题：</div>
     </div>
-    
+
+    <!-- 谜题内容 -->
     <div id="puzzle-content" class="hidden">
-        <div class="puzzle-header">
-            <div id="puzzle-text"></div>
-            <div class="progress-bar">
-                <div id="progress" style="width: 0%"></div>
-                <div class="progress-text">0%</div>
-            </div>
-            <div class="hint-container">
-                <button id="hint-button" class="terminal-button">
-                    Get Hint (<span class="hint-count">2</span> remaining)
-                </button>
-            </div>
+        <div class="prompt">> 解密任务_</div>
+        <div id="puzzle-text"></div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+            <div class="progress-text">0%</div>
         </div>
-        
-        <div id="chat-window" class="hidden">
-            <div id="chat-messages"></div>
-            <div class="input-line">
-                <span class="prompt">> </span>
-                <input type="text" id="chat-input" placeholder="Ask a question or tell the complete story...">
-            </div>
-            <div id="feedback"></div>
-        </div>
-        
-        <button id="back-button" class="terminal-button hidden">
-            > Return to Theme List_
-        </button>
     </div>
+
+    <!-- 聊天窗口 -->
+    <div id="chat-window" class="chat-window hidden">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-line">
+            <span class="prompt">> </span>
+            <input type="text" id="chat-input" placeholder="输入你的问题或答案...">
+        </div>
+    </div>
+
+    <!-- 导航按钮 -->
+    <div class="nav-buttons">
+        <button id="back-button" class="terminal-button hidden">> 返回主页_</button>
+        <button id="hint-button" class="terminal-button hidden">> 获取提示_<span class="hint-count">2</span></button>
+    </div>
+
+    <div id="feedback" class="hidden"></div>
 </div> 

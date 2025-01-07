@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Share Tech Mono', monospace;
 }
 
 body {
@@ -568,7 +567,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: #0f0;
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Courier New', monospace;
     font-size: 24px;
     text-shadow: 0 0 10px #0f0;
     white-space: nowrap;

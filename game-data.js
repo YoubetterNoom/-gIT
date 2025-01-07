@@ -2,37 +2,50 @@ const gameData = {
     themes: [
         {
             id: 1,
-            name: "Mystery Stories",
+            name: "悬疑故事",
             puzzles: [
                 {
                     id: 1,
-                    title: "The Art Teacher's Last Class",
-                    question: "I was an art teacher at a primary school. After my first class, I committed suicide.",
-                    answer: "I asked students to draw their mothers. I discovered that all the mothers in their drawings had no limbs. In this poor village, men bought wives from outside and cut off their limbs to prevent them from escaping. When I realized this and tried to escape, I found villagers blocking my way. With no escape possible, I chose to end my life."
+                    title: "美术老师的最后一课",
+                    question: "我在一所小学当美术老师，上完第一节课后我自杀了",
+                    answer: "我让学生画自己的妈妈，发现他们画的妈妈，都只有身体没有四肢，原来这个村的人很穷，讨不到媳妇只能去外面买，为了防止女人逃跑，就将她们的手脚砍掉，当我意识到这一点想时想逃走，却发现门前已经站满村民，已经逃不了了，所以我选择自杀。"
                 },
                 {
                     id: 2,
-                    title: "The Funeral",
-                    question: "At grandfather's funeral, I saw him. A few days later, my sister died.",
-                    answer: "I fell in love with him at grandfather's funeral. To see him again, I killed my sister. At her funeral, I got to see him again as planned."
+                    title: "葬礼",
+                    question: "在爷爷的葬礼上，我看见了他，几天后，姐姐死了",
+                    answer: "在爷爷的葬礼上，我喜欢上了他，为了能在见他一面，我把姐姐杀了，在姐姐的葬礼上，又如愿见到了他。"
                 },
                 {
                     id: 3,
-                    title: "Midnight Elevator",
-                    question: "A person pressed the button for the 13th floor in the elevator but got off on the 12th floor. Why?",
-                    answer: "They were too short to reach the 13th floor button."
-                }
+                    title: "午夜电梯",
+                    question: "一个人在电梯里按下了13楼的按钮，但最后却在12楼下了电梯。为什么？",
+                    answer: "他是个矮子，够不着13楼的按钮"
+                },
+                // 可以继续添加更多悬疑故事...
             ]
         },
         {
             id: 2,
-            name: "Sci-Fi Stories",
+            name: "科幻故事",
             puzzles: [
                 {
                     id: 1,
-                    title: "Space Station Mystery",
-                    question: "An astronaut woke up on the space station and found all instruments showing the same number. What does this mean?",
-                    answer: "They were dreaming."
+                    title: "太空站之谜",
+                    question: "一个宇航员在太空站醒来，发现所有的仪器都显示着相同的数字，这意味着什么？",
+                    answer: "他在做梦"
+                }
+            ]
+        },
+        {
+            id: 3,
+            name: "侦探故事",
+            puzzles: [
+                {
+                    id: 1,
+                    title: "神秘的水滩",
+                    question: "一个侦探走进一间房间，房间里只有一张桌子和一滩水。侦探立即知道发生了什么，这是为什么？",
+                    answer: "冰块融化了"
                 }
             ]
         }
